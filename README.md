@@ -20,9 +20,12 @@ responds at **0x33**.
 | Qty | Part | Notes |
 | --- | --- | --- |
 | 1 | Raspberry Pi Pico (RP2040) with soldered headers | Plugs into the Explorer Base |
-| 1 | Pimoroni Pico Explorer Base | Includes the display and breakout sockets |
+| 1 | [Pimoroni Pico Explorer Base](https://shop.pimoroni.com/products/pico-explorer-base?variant=32369514315859) | Includes the display and breakout sockets |
 | 1 | [MLX90640 Thermal Camera Breakout](https://shop.pimoroni.com/products/mlx90640-thermal-camera-breakout?variant=12549161746515) | Fits Breakout 2; linked variant is wide angle (110°) |
 | 1 | Micro-USB data cable | Programming and USB power |
+
+For the planned RF receiver experiment, see the
+[wiring diagram and mini breadboard guide](docs/rf-receiver-wiring.md).
 
 ## Uses and experiment ideas
 
