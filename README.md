@@ -1,9 +1,44 @@
 # Pico Explorer experiments
 
-Live MLX90640 thermal imaging on a Raspberry Pi Pico (RP2040) with a
-Pimoroni Pico Explorer Base. Plug the MLX90640 into **Breakout 2**.
+A standalone thermal camera built with a Raspberry Pi Pico (RP2040), a
+Pimoroni Pico Explorer Base, and a Melexis MLX90640 infrared sensor. It displays
+a live 32×24 temperature map on the Explorer's screen, with minimum and maximum
+temperatures in Celsius. After programming, processing and display run locally
+on the Pico; the application does not record images or send them over a network.
+
+![Pico Explorer displaying a live thermal image while viewing a cup of tea](assets/thermal-camera-tea.jpg)
+
+*The camera in use viewing a cup of tea: the hot region appears white/red
+against the cooler blue surroundings.*
+
+Plug the MLX90640 into **Breakout 2**.
 Both breakout sockets share I²C0: SDA **GP20**, SCL **GP21**. The camera
 responds at **0x33**.
+
+## Uses and experiment ideas
+
+- **Check food and drinks before serving:** view approximate surface
+  temperatures, spot hotter areas, and watch food or a cup of tea cool down.
+  This is an experimental surface-temperature check: it cannot establish the
+  internal temperature, whether food is fully cooked, or whether it is safe to
+  eat or drink. Use a suitable food probe thermometer for safety-critical
+  checks. See the [food thermometer guidance](https://www.foodstandards.gov.au/business/food-safety/thermometers)
+  on the difference between infrared surface readings and probe measurements.
+- **Explore privacy-preserving monitoring:** low-resolution heat maps could
+  support presence, occupancy, or movement detection while capturing less
+  visual detail than a conventional camera. A possible research application is
+  occupancy or bedside-presence monitoring in a hospital context. These are
+  future experiments; the current code only displays temperatures and does not
+  detect people or generate alerts. Thermal data can still reveal sensitive
+  activity, so low resolution alone does not guarantee anonymity. This
+  prototype has not been validated for clinical monitoring or diagnosis.
+- **Investigate heat around the home:** compare warm electronics, radiators,
+  or cooling objects and observe how their surface-temperature patterns change.
+
+Melexis describes people detection and occupancy sensing among the
+[MLX90640's applications](https://www.melexis.com/en/product/MLX90640/far-infrared-thermal-sensor-array).
+Readings depend on emissivity, reflections, distance, and how much of each
+sensor pixel the target fills; the viewer currently assumes 0.95 emissivity.
 
 ## Run on the board
 
