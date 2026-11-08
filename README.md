@@ -15,6 +15,15 @@ Plug the MLX90640 into **Breakout 2**.
 Both breakout sockets share I²C0: SDA **GP20**, SCL **GP21**. The camera
 responds at **0x33**.
 
+## Bill of materials
+
+| Qty | Part | Notes |
+| --- | --- | --- |
+| 1 | Raspberry Pi Pico (RP2040) with soldered headers | Plugs into the Explorer Base |
+| 1 | Pimoroni Pico Explorer Base | Includes the display and breakout sockets |
+| 1 | [MLX90640 Thermal Camera Breakout](https://shop.pimoroni.com/products/mlx90640-thermal-camera-breakout?variant=12549161746515) | Fits Breakout 2; linked variant is wide angle (110°) |
+| 1 | Micro-USB data cable | Programming and USB power |
+
 ## Uses and experiment ideas
 
 - **Check food and drinks before serving:** view approximate surface
