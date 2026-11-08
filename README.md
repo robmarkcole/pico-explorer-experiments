@@ -1,5 +1,31 @@
 # Pico Explorer experiments
 
+## RF receiver display experiment (current startup)
+
+The current `main.py` runs an MX-RM-5V RF receiver experiment. It shows GP0
+input activity on the Explorer display and flashes **REPEATED RF** when three
+similar pulse frames arrive. Development uses a Faro Barcelona Pemba ceiling-fan
+remote; its exact protocol and compatibility are still being established.
+
+The current bench setup powers the receiver from **3V3**, with common GND and
+DATA directly to **GP0**. Reception at this reduced supply is experimental.
+Do not switch the receiver to 5 V with DATA connected directly to the Pico.
+No piezo jumper is needed. **A** clears the displayed counts.
+
+```sh
+mpremote fs cp lib/rf_detector.py :lib/rf_detector.py
+mpremote fs cp rf_sniffer.py :rf_sniffer.py
+mpremote fs cp main.py :main.py
+mpremote reset
+```
+
+This uses the Pimoroni firmware and existing `lib` directory described below.
+An edge count includes receiver noise; a repeated burst is a heuristic, not
+confirmation of a specific fan command. Raw candidate timings are logged over
+USB for development. See the [RF wiring guide](docs/rf-receiver-wiring.md).
+
+## Thermal camera experiment
+
 A standalone thermal camera built with a Raspberry Pi Pico (RP2040), a
 Pimoroni Pico Explorer Base, and a Melexis MLX90640 infrared sensor. It displays
 a live 32×24 temperature map on the Explorer's screen, with minimum and maximum
@@ -66,13 +92,15 @@ then copy the application and driver (back up an existing `main.py` first):
 mpremote fs cp :main.py original-main.py
 mpremote fs mkdir :lib
 mpremote fs cp lib/mlx90640.py :lib/mlx90640.py
-mpremote fs cp main.py :main.py
+mpremote fs cp experiments/thermal_camera.py :main.py
 mpremote reset
 ```
 
 Skip `mkdir` if `lib` already exists. With several connected boards, add
 `connect /dev/cu.usbmodem…` before each command to select the Pico.
-The viewer starts automatically at power-on; no computer is needed afterward.
+Copying `experiments/thermal_camera.py` to `main.py` restores the thermal viewer
+as the power-on experiment; no computer is needed afterward. The RF setup above
+switches back to the receiver display.
 
 ## Display and controls
 
