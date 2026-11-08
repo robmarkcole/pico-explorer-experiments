@@ -1,8 +1,37 @@
 # Pico Explorer experiments
 
-## RF receiver display experiment (current startup)
+## VL53L1X laser ruler (current startup)
 
-The current `main.py` runs an MX-RM-5V RF receiver experiment. It shows GP0
+Plug the [VL53L1X distance sensor](https://shop.pimoroni.com/products/vl53l1x-breakout?variant=12628497236051)
+into **Breakout 1**. It shares GP20/GP21 I²C0 with the thermal camera, using
+address **0x29**. The display shows live distance, a scrolling history graph,
+and a proximity bar that grows as an object comes closer. Invalid measurements
+show **No valid target**.
+
+- **A:** hold/resume the displayed measurement.
+- **B:** switch between centimetres and millimetres.
+- **X / Y:** decrease/increase the near threshold by 5 cm (default: 30 cm).
+
+The history graph and proximity bar use a fixed 0–100 cm range; the numeric
+reading can extend beyond it. The device starts automatically after reset.
+No extra wires or piezo jumper are needed; keep the 5 V RF DATA wire disconnected.
+
+```sh
+mpremote fs cp lib/vl53l1x.py :lib/vl53l1x.py
+mpremote fs cp distance_demo.py :distance_demo.py
+mpremote fs cp main.py :main.py
+mpremote fs cp licenses/vl53l1x-MIT.txt :licenses/vl53l1x-MIT.txt
+mpremote reset
+```
+
+Use the existing Pimoroni firmware and `lib` / `licenses` directories. The
+driver derives from the MIT-licensed
+[vl53l1x_pico driver](https://github.com/drakxtwo/vl53l1x_pico/tree/907590e6df82b91c539d92ae359a4ac8a160d8e1),
+with fresh-data polling, status checks and interrupt clearing added.
+
+## RF receiver display experiment
+
+`rf_sniffer.py` runs an MX-RM-5V RF receiver experiment. It shows GP0
 input activity on the Explorer display and flashes **REPEATED RF** when three
 similar pulse frames arrive. Development uses a Faro Barcelona Pemba ceiling-fan
 remote; its exact protocol and compatibility are still being established.
@@ -15,7 +44,7 @@ No piezo jumper is needed. **A** clears the displayed counts.
 ```sh
 mpremote fs cp lib/rf_detector.py :lib/rf_detector.py
 mpremote fs cp rf_sniffer.py :rf_sniffer.py
-mpremote fs cp main.py :main.py
+mpremote fs cp experiments/rf_display.py :main.py
 mpremote reset
 ```
 

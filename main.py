@@ -1,3 +1,3 @@
-"""Start the current Pico Explorer experiment: RF reception on the display."""
-from rf_sniffer import main
+"""Current Pico Explorer experiment: VL53L1X distance display."""
+from distance_demo import main
 main()

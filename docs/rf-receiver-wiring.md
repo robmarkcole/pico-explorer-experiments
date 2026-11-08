@@ -7,7 +7,8 @@ and **DATA → GP0** directly. The reduced supply avoids a 5 V DATA signal at
 the Pico input, but receiver sensitivity and output logic levels at 3.3 V are
 not guaranteed. This is a close-range development setup.
 
-`main.py` starts `rf_sniffer.py`. The display shows input edges per second,
+Copy `experiments/rf_display.py` to the Pico as `main.py` to start `rf_sniffer.py`.
+The display shows input edges per second,
 candidate frames, capture overflows, and repeated-burst counts. It flashes
 **REPEATED RF** after three similar frames within 1.5 seconds and limits events
 to one per second. Button A clears event/frame counts. No buzzer is used.
