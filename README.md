@@ -8,6 +8,10 @@ address **0x29**. The display shows live distance, a scrolling history graph,
 and a proximity bar that grows as an object comes closer. Invalid measurements
 show **No valid target**.
 
+![Pico Explorer laser ruler showing 15.9 cm, with the VL53L1X on Breakout 1 and MLX90640 on Breakout 2](assets/laser-ruler-in-use.jpg)
+
+*The laser ruler in use, with both the distance and thermal sensors attached.*
+
 - **A:** hold/resume the displayed measurement.
 - **B:** switch between centimetres and millimetres.
 - **X / Y:** decrease/increase the near threshold by 5 cm (default: 30 cm).
@@ -28,6 +32,22 @@ Use the existing Pimoroni firmware and `lib` / `licenses` directories. The
 driver derives from the MIT-licensed
 [vl53l1x_pico driver](https://github.com/drakxtwo/vl53l1x_pico/tree/907590e6df82b91c539d92ae359a4ac8a160d8e1),
 with fresh-data polling, status checks and interrupt clearing added.
+
+### Combining distance and temperature
+
+A future experiment could combine the VL53L1X distance reading with the
+Melexis MLX90640 thermal image to build an **object-characterisation device**.
+It could record the distance to an object alongside its minimum, maximum and
+average surface temperatures and thermal pattern, for example to compare warm
+electronics or follow a cup of tea cooling down.
+
+The distance sensor could guide the user to a consistent measurement distance
+before taking a thermal sample, helping make comparisons more repeatable.
+Both sensors would need to be aimed at the same target, accounting for their
+different fields of view and positions. Temperature readings would still depend
+on surface emissivity and reflected heat; any distance-based correction would
+need calibration. Combined acquisition and characterisation are ideas for future
+work; the current apps display distance and temperature separately.
 
 ## RF receiver display experiment
 
