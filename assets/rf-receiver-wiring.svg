@@ -1,0 +1,260 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1200" viewBox="0 0 1400 1200" role="img" aria-labelledby="title desc">
+<title id="title">MX-RM-5V to Pico Explorer wiring and mini breadboard contacts</title>
+<desc id="desc">Receiver VCC connects to USB VBUS 5 volts, ground to common ground, and DATA passes through a 3.3 volt powered SN74LVC1G17 buffer to GP0. In the pictured Explorer orientation, breadboard groups of five holes connect vertically on each side of a horizontal centre gap, with no power rails.</desc>
+<rect width="1400" height="1200" fill="#ffffff"/>
+<style>text{font-family:Arial,sans-serif;fill:#142b3b;font-size:22px}.small{font-size:18px}.heading{font-size:30px;font-weight:bold}.sub{font-size:24px;font-weight:bold}</style>
+<text x="45" y="48" class="heading" text-anchor="start">RF receiver → Pico Explorer</text>
+<text x="45" y="80" class="small" text-anchor="start">Proposed wiring • USB-powered Pico • use labelled buffer breakout pins</text>
+<rect x="45" y="180" width="245" height="300" rx="10" fill="#f2f6fa" stroke="#7d91a0" stroke-width="2"/>
+<text x="65" y="220" class="sub" text-anchor="start">MX-RM-5V</text>
+<text x="270" y="258" class="" text-anchor="end">VCC</text>
+<text x="270" y="338" class="" text-anchor="end">DATA</text>
+<text x="270" y="438" class="" text-anchor="end">GND</text>
+<text x="65" y="385" class="small" text-anchor="start">Other DATA: unused</text>
+<rect x="950" y="180" width="405" height="300" rx="10" fill="#f2f6fa" stroke="#7d91a0" stroke-width="2"/>
+<text x="975" y="220" class="sub" text-anchor="start">Pico / Explorer</text>
+<text x="970" y="258" class="" text-anchor="start">VBUS • Pico physical pin 40</text>
+<text x="970" y="308" class="" text-anchor="start">3V3 • Explorer socket</text>
+<text x="970" y="378" class="" text-anchor="start">GP0 • Explorer socket</text>
+<text x="970" y="438" class="" text-anchor="start">GND • Explorer socket</text>
+<rect x="540" y="280" width="230" height="170" rx="10" fill="#edf5ff" stroke="#7d91a0" stroke-width="2"/>
+<text x="655" y="315" class="small" text-anchor="middle">SN74LVC1G17</text>
+<text x="655" y="344" class="small" text-anchor="middle">5 V-tolerant input</text>
+<text x="655" y="417" class="small" text-anchor="middle">3.3 V output</text>
+<text x="665" y="272" class="small" text-anchor="start">VCC</text>
+<text x="555" y="375" class="small" text-anchor="start">A</text>
+<text x="745" y="375" class="small" text-anchor="start">Y</text>
+<text x="665" y="475" class="small" text-anchor="start">GND</text>
+<polyline points="290,250 400,250 400,115 900,115 900,250 950,250" fill="none" stroke="#c23b35" stroke-width="4" stroke-linejoin="round"/>
+<text x="420" y="106" class="small" text-anchor="start">USB 5 V → receiver VCC</text>
+<polyline points="950,300 850,300 850,205 650,205 650,280" fill="none" stroke="#8b5cb7" stroke-width="4" stroke-linejoin="round"/>
+<text x="670" y="194" class="small" text-anchor="start">3.3 V → buffer VCC</text>
+<polyline points="290,330 510,330 510,370 540,370" fill="none" stroke="#167d62" stroke-width="4" stroke-linejoin="round"/>
+<text x="320" y="320" class="small" text-anchor="start">RF pulses</text>
+<polyline points="770,370 950,370" fill="none" stroke="#167d62" stroke-width="4" stroke-linejoin="round"/>
+<text x="790" y="357" class="small" text-anchor="start">3.3 V logic</text>
+<polyline points="290,430 430,430 430,540 890,540 890,430 950,430" fill="none" stroke="#344653" stroke-width="4" stroke-linejoin="round"/>
+<polyline points="650,450 650,540" fill="none" stroke="#344653" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="650" cy="540" r="5" fill="#344653"/>
+<text x="670" y="530" class="small" text-anchor="start">Common ground</text>
+<text x="45" y="585" class="small" text-anchor="start">Fit 100 nF between buffer VCC and GND, close to the buffer.</text>
+<text x="45" y="613" class="small" text-anchor="start">Use an accessible VBUS connection; Explorer 3V3 is not a 5 V supply. Unplug USB while wiring.</text>
+<line x1="45" y1="640" x2="1355" y2="640" stroke="#c7d1d9"/>
+<text x="45" y="685" class="sub" text-anchor="start">Mini breadboard: contact direction in your board’s orientation</text>
+<text x="45" y="716" class="small" text-anchor="start">USB to the left • Pico along the top • display to the right</text>
+<rect x="50" y="745" width="610" height="375" rx="10" fill="#ecf5ee" stroke="#7d91a0" stroke-width="2"/>
+<polyline points="83,775 83,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="83" cy="775" r="6" fill="#5c7264"/>
+<circle cx="83" cy="805" r="6" fill="#5c7264"/>
+<circle cx="83" cy="835" r="6" fill="#5c7264"/>
+<circle cx="83" cy="865" r="6" fill="#5c7264"/>
+<circle cx="83" cy="895" r="6" fill="#5c7264"/>
+<polyline points="83,955 83,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="83" cy="955" r="6" fill="#5c7264"/>
+<circle cx="83" cy="985" r="6" fill="#5c7264"/>
+<circle cx="83" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="83" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="83" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="116,775 116,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="116" cy="775" r="6" fill="#5c7264"/>
+<circle cx="116" cy="805" r="6" fill="#5c7264"/>
+<circle cx="116" cy="835" r="6" fill="#5c7264"/>
+<circle cx="116" cy="865" r="6" fill="#5c7264"/>
+<circle cx="116" cy="895" r="6" fill="#5c7264"/>
+<polyline points="116,955 116,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="116" cy="955" r="6" fill="#5c7264"/>
+<circle cx="116" cy="985" r="6" fill="#5c7264"/>
+<circle cx="116" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="116" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="116" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="149,775 149,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="149" cy="775" r="6" fill="#5c7264"/>
+<circle cx="149" cy="805" r="6" fill="#5c7264"/>
+<circle cx="149" cy="835" r="6" fill="#5c7264"/>
+<circle cx="149" cy="865" r="6" fill="#5c7264"/>
+<circle cx="149" cy="895" r="6" fill="#5c7264"/>
+<polyline points="149,955 149,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="149" cy="955" r="6" fill="#5c7264"/>
+<circle cx="149" cy="985" r="6" fill="#5c7264"/>
+<circle cx="149" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="149" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="149" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="182,775 182,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="182" cy="775" r="6" fill="#5c7264"/>
+<circle cx="182" cy="805" r="6" fill="#5c7264"/>
+<circle cx="182" cy="835" r="6" fill="#5c7264"/>
+<circle cx="182" cy="865" r="6" fill="#5c7264"/>
+<circle cx="182" cy="895" r="6" fill="#5c7264"/>
+<polyline points="182,955 182,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="182" cy="955" r="6" fill="#5c7264"/>
+<circle cx="182" cy="985" r="6" fill="#5c7264"/>
+<circle cx="182" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="182" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="182" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="215,775 215,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="215" cy="775" r="6" fill="#5c7264"/>
+<circle cx="215" cy="805" r="6" fill="#5c7264"/>
+<circle cx="215" cy="835" r="6" fill="#5c7264"/>
+<circle cx="215" cy="865" r="6" fill="#5c7264"/>
+<circle cx="215" cy="895" r="6" fill="#5c7264"/>
+<polyline points="215,955 215,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="215" cy="955" r="6" fill="#5c7264"/>
+<circle cx="215" cy="985" r="6" fill="#5c7264"/>
+<circle cx="215" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="215" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="215" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="248,775 248,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="248" cy="775" r="6" fill="#5c7264"/>
+<circle cx="248" cy="805" r="6" fill="#5c7264"/>
+<circle cx="248" cy="835" r="6" fill="#5c7264"/>
+<circle cx="248" cy="865" r="6" fill="#5c7264"/>
+<circle cx="248" cy="895" r="6" fill="#5c7264"/>
+<polyline points="248,955 248,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="248" cy="955" r="6" fill="#5c7264"/>
+<circle cx="248" cy="985" r="6" fill="#5c7264"/>
+<circle cx="248" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="248" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="248" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="281,775 281,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="281" cy="775" r="6" fill="#5c7264"/>
+<circle cx="281" cy="805" r="6" fill="#5c7264"/>
+<circle cx="281" cy="835" r="6" fill="#5c7264"/>
+<circle cx="281" cy="865" r="6" fill="#5c7264"/>
+<circle cx="281" cy="895" r="6" fill="#5c7264"/>
+<polyline points="281,955 281,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="281" cy="955" r="6" fill="#5c7264"/>
+<circle cx="281" cy="985" r="6" fill="#5c7264"/>
+<circle cx="281" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="281" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="281" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="314,775 314,895" fill="none" stroke="#16845e" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="314" cy="775" r="6" fill="#16845e"/>
+<circle cx="314" cy="805" r="6" fill="#16845e"/>
+<circle cx="314" cy="835" r="6" fill="#16845e"/>
+<circle cx="314" cy="865" r="6" fill="#16845e"/>
+<circle cx="314" cy="895" r="6" fill="#16845e"/>
+<polyline points="314,955 314,1075" fill="none" stroke="#16845e" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="314" cy="955" r="6" fill="#16845e"/>
+<circle cx="314" cy="985" r="6" fill="#16845e"/>
+<circle cx="314" cy="1015" r="6" fill="#16845e"/>
+<circle cx="314" cy="1045" r="6" fill="#16845e"/>
+<circle cx="314" cy="1075" r="6" fill="#16845e"/>
+<polyline points="347,775 347,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="347" cy="775" r="6" fill="#5c7264"/>
+<circle cx="347" cy="805" r="6" fill="#5c7264"/>
+<circle cx="347" cy="835" r="6" fill="#5c7264"/>
+<circle cx="347" cy="865" r="6" fill="#5c7264"/>
+<circle cx="347" cy="895" r="6" fill="#5c7264"/>
+<polyline points="347,955 347,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="347" cy="955" r="6" fill="#5c7264"/>
+<circle cx="347" cy="985" r="6" fill="#5c7264"/>
+<circle cx="347" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="347" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="347" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="380,775 380,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="380" cy="775" r="6" fill="#5c7264"/>
+<circle cx="380" cy="805" r="6" fill="#5c7264"/>
+<circle cx="380" cy="835" r="6" fill="#5c7264"/>
+<circle cx="380" cy="865" r="6" fill="#5c7264"/>
+<circle cx="380" cy="895" r="6" fill="#5c7264"/>
+<polyline points="380,955 380,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="380" cy="955" r="6" fill="#5c7264"/>
+<circle cx="380" cy="985" r="6" fill="#5c7264"/>
+<circle cx="380" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="380" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="380" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="413,775 413,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="413" cy="775" r="6" fill="#5c7264"/>
+<circle cx="413" cy="805" r="6" fill="#5c7264"/>
+<circle cx="413" cy="835" r="6" fill="#5c7264"/>
+<circle cx="413" cy="865" r="6" fill="#5c7264"/>
+<circle cx="413" cy="895" r="6" fill="#5c7264"/>
+<polyline points="413,955 413,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="413" cy="955" r="6" fill="#5c7264"/>
+<circle cx="413" cy="985" r="6" fill="#5c7264"/>
+<circle cx="413" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="413" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="413" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="446,775 446,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="446" cy="775" r="6" fill="#5c7264"/>
+<circle cx="446" cy="805" r="6" fill="#5c7264"/>
+<circle cx="446" cy="835" r="6" fill="#5c7264"/>
+<circle cx="446" cy="865" r="6" fill="#5c7264"/>
+<circle cx="446" cy="895" r="6" fill="#5c7264"/>
+<polyline points="446,955 446,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="446" cy="955" r="6" fill="#5c7264"/>
+<circle cx="446" cy="985" r="6" fill="#5c7264"/>
+<circle cx="446" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="446" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="446" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="479,775 479,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="479" cy="775" r="6" fill="#5c7264"/>
+<circle cx="479" cy="805" r="6" fill="#5c7264"/>
+<circle cx="479" cy="835" r="6" fill="#5c7264"/>
+<circle cx="479" cy="865" r="6" fill="#5c7264"/>
+<circle cx="479" cy="895" r="6" fill="#5c7264"/>
+<polyline points="479,955 479,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="479" cy="955" r="6" fill="#5c7264"/>
+<circle cx="479" cy="985" r="6" fill="#5c7264"/>
+<circle cx="479" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="479" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="479" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="512,775 512,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="512" cy="775" r="6" fill="#5c7264"/>
+<circle cx="512" cy="805" r="6" fill="#5c7264"/>
+<circle cx="512" cy="835" r="6" fill="#5c7264"/>
+<circle cx="512" cy="865" r="6" fill="#5c7264"/>
+<circle cx="512" cy="895" r="6" fill="#5c7264"/>
+<polyline points="512,955 512,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="512" cy="955" r="6" fill="#5c7264"/>
+<circle cx="512" cy="985" r="6" fill="#5c7264"/>
+<circle cx="512" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="512" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="512" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="545,775 545,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="545" cy="775" r="6" fill="#5c7264"/>
+<circle cx="545" cy="805" r="6" fill="#5c7264"/>
+<circle cx="545" cy="835" r="6" fill="#5c7264"/>
+<circle cx="545" cy="865" r="6" fill="#5c7264"/>
+<circle cx="545" cy="895" r="6" fill="#5c7264"/>
+<polyline points="545,955 545,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="545" cy="955" r="6" fill="#5c7264"/>
+<circle cx="545" cy="985" r="6" fill="#5c7264"/>
+<circle cx="545" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="545" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="545" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="578,775 578,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="578" cy="775" r="6" fill="#5c7264"/>
+<circle cx="578" cy="805" r="6" fill="#5c7264"/>
+<circle cx="578" cy="835" r="6" fill="#5c7264"/>
+<circle cx="578" cy="865" r="6" fill="#5c7264"/>
+<circle cx="578" cy="895" r="6" fill="#5c7264"/>
+<polyline points="578,955 578,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="578" cy="955" r="6" fill="#5c7264"/>
+<circle cx="578" cy="985" r="6" fill="#5c7264"/>
+<circle cx="578" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="578" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="578" cy="1075" r="6" fill="#5c7264"/>
+<polyline points="611,775 611,895" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="611" cy="775" r="6" fill="#5c7264"/>
+<circle cx="611" cy="805" r="6" fill="#5c7264"/>
+<circle cx="611" cy="835" r="6" fill="#5c7264"/>
+<circle cx="611" cy="865" r="6" fill="#5c7264"/>
+<circle cx="611" cy="895" r="6" fill="#5c7264"/>
+<polyline points="611,955 611,1075" fill="none" stroke="#bdcfc4" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="611" cy="955" r="6" fill="#5c7264"/>
+<circle cx="611" cy="985" r="6" fill="#5c7264"/>
+<circle cx="611" cy="1015" r="6" fill="#5c7264"/>
+<circle cx="611" cy="1045" r="6" fill="#5c7264"/>
+<circle cx="611" cy="1075" r="6" fill="#5c7264"/>
+<rect x="66" y="914" width="578" height="22" rx="8" fill="#c3d3c7"/>
+<text x="690" y="785" class="sub" text-anchor="start">UP / DOWN: five holes connected</text>
+<text x="690" y="821" class="" text-anchor="start">Each vertical group of five is one connection.</text>
+<text x="690" y="859" class="" text-anchor="start">Adjacent columns are separate.</text>
+<text x="690" y="925" class="sub" text-anchor="start">CENTRE GAP: no connection across it</text>
+<text x="690" y="969" class="" text-anchor="start">Upper and lower groups are separate.</text>
+<text x="690" y="1015" class="sub" text-anchor="start">No dedicated + / − power rails</text>
+<text x="690" y="1053" class="" text-anchor="start">Nothing is powered until you add jumpers.</text>
+<text x="690" y="1091" class="small" text-anchor="start">Receiver pins go left → right into separate columns.</text>
+<text x="45" y="1162" class="small" text-anchor="start">Before power-on: use continuity mode to confirm five-hole groups, separate columns, and the centre gap.</text>
+</svg>

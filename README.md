@@ -1,5 +1,80 @@
 # Pico Explorer experiments
 
+## VL53L1X laser ruler (current startup)
+
+Plug the [VL53L1X distance sensor](https://shop.pimoroni.com/products/vl53l1x-breakout?variant=12628497236051)
+into **Breakout 1**. It shares GP20/GP21 I²C0 with the thermal camera, using
+address **0x29**. The display shows live distance, a scrolling history graph,
+and a proximity bar that grows as an object comes closer. Invalid measurements
+show **No valid target**.
+
+![Pico Explorer laser ruler showing 15.9 cm, with the VL53L1X on Breakout 1 and MLX90640 on Breakout 2](assets/laser-ruler-in-use.jpg)
+
+*The laser ruler in use, with both the distance and thermal sensors attached.*
+
+- **A:** hold/resume the displayed measurement.
+- **B:** switch between centimetres and millimetres.
+- **X / Y:** decrease/increase the near threshold by 5 cm (default: 30 cm).
+
+The history graph and proximity bar use a fixed 0–100 cm range; the numeric
+reading can extend beyond it. The device starts automatically after reset.
+No extra wires or piezo jumper are needed; keep the 5 V RF DATA wire disconnected.
+
+```sh
+mpremote fs cp lib/vl53l1x.py :lib/vl53l1x.py
+mpremote fs cp distance_demo.py :distance_demo.py
+mpremote fs cp main.py :main.py
+mpremote fs cp licenses/vl53l1x-MIT.txt :licenses/vl53l1x-MIT.txt
+mpremote reset
+```
+
+Use the existing Pimoroni firmware and `lib` / `licenses` directories. The
+driver derives from the MIT-licensed
+[vl53l1x_pico driver](https://github.com/drakxtwo/vl53l1x_pico/tree/907590e6df82b91c539d92ae359a4ac8a160d8e1),
+with fresh-data polling, status checks and interrupt clearing added.
+
+### Combining distance and temperature
+
+A future experiment could combine the VL53L1X distance reading with the
+Melexis MLX90640 thermal image to build an **object-characterisation device**.
+It could record the distance to an object alongside its minimum, maximum and
+average surface temperatures and thermal pattern, for example to compare warm
+electronics or follow a cup of tea cooling down.
+
+The distance sensor could guide the user to a consistent measurement distance
+before taking a thermal sample, helping make comparisons more repeatable.
+Both sensors would need to be aimed at the same target, accounting for their
+different fields of view and positions. Temperature readings would still depend
+on surface emissivity and reflected heat; any distance-based correction would
+need calibration. Combined acquisition and characterisation are ideas for future
+work; the current apps display distance and temperature separately.
+
+## RF receiver display experiment
+
+`rf_sniffer.py` runs an MX-RM-5V RF receiver experiment. It shows GP0
+input activity on the Explorer display and flashes **REPEATED RF** when three
+similar pulse frames arrive. Development uses a Faro Barcelona Pemba ceiling-fan
+remote; its exact protocol and compatibility are still being established.
+
+The current bench setup powers the receiver from **3V3**, with common GND and
+DATA directly to **GP0**. Reception at this reduced supply is experimental.
+Do not switch the receiver to 5 V with DATA connected directly to the Pico.
+No piezo jumper is needed. **A** clears the displayed counts.
+
+```sh
+mpremote fs cp lib/rf_detector.py :lib/rf_detector.py
+mpremote fs cp rf_sniffer.py :rf_sniffer.py
+mpremote fs cp experiments/rf_display.py :main.py
+mpremote reset
+```
+
+This uses the Pimoroni firmware and existing `lib` directory described below.
+An edge count includes receiver noise; a repeated burst is a heuristic, not
+confirmation of a specific fan command. Raw candidate timings are logged over
+USB for development. See the [RF wiring guide](docs/rf-receiver-wiring.md).
+
+## Thermal camera experiment
+
 A standalone thermal camera built with a Raspberry Pi Pico (RP2040), a
 Pimoroni Pico Explorer Base, and a Melexis MLX90640 infrared sensor. It displays
 a live 32×24 temperature map on the Explorer's screen, with minimum and maximum
@@ -20,9 +95,12 @@ responds at **0x33**.
 | Qty | Part | Notes |
 | --- | --- | --- |
 | 1 | Raspberry Pi Pico (RP2040) with soldered headers | Plugs into the Explorer Base |
-| 1 | Pimoroni Pico Explorer Base | Includes the display and breakout sockets |
+| 1 | [Pimoroni Pico Explorer Base](https://shop.pimoroni.com/products/pico-explorer-base?variant=32369514315859) | Includes the display and breakout sockets |
 | 1 | [MLX90640 Thermal Camera Breakout](https://shop.pimoroni.com/products/mlx90640-thermal-camera-breakout?variant=12549161746515) | Fits Breakout 2; linked variant is wide angle (110°) |
 | 1 | Micro-USB data cable | Programming and USB power |
+
+For the planned RF receiver experiment, see the
+[wiring diagram and mini breadboard guide](docs/rf-receiver-wiring.md).
 
 ## Uses and experiment ideas
 
@@ -63,13 +141,15 @@ then copy the application and driver (back up an existing `main.py` first):
 mpremote fs cp :main.py original-main.py
 mpremote fs mkdir :lib
 mpremote fs cp lib/mlx90640.py :lib/mlx90640.py
-mpremote fs cp main.py :main.py
+mpremote fs cp experiments/thermal_camera.py :main.py
 mpremote reset
 ```
 
 Skip `mkdir` if `lib` already exists. With several connected boards, add
 `connect /dev/cu.usbmodem…` before each command to select the Pico.
-The viewer starts automatically at power-on; no computer is needed afterward.
+Copying `experiments/thermal_camera.py` to `main.py` restores the thermal viewer
+as the power-on experiment; no computer is needed afterward. The RF setup above
+switches back to the receiver display.
 
 ## Display and controls
 
