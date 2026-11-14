@@ -132,3 +132,20 @@ class LoggerTests(unittest.TestCase):
         recording.accept(dict(records()[0], capture_id=1))
         with self.assertRaises(ValueError):
             recording.accept(dict(records()[1], capture_id=2))
+
+    def test_idle_heartbeat_does_not_save_or_consume_capture_number(self):
+        stream = [dict(records()[0], capture_id=1),
+                  {'type': 'idle', 'capture_id': 1, 'edges': 300}]
+        for record in records():
+            record = dict(record)
+            if record['type'] in ('ready', 'begin', 'end'):
+                record['capture_id'] = 1
+            stream.append(record)
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertEqual(self.run_logger(directory, stream,
+                             extra_args=['--continuous', '--count', '1']), 0)
+            paths = list(Path(directory).glob('*.json'))
+            self.assertEqual(len(paths), 1)
+            payload = json.loads(paths[0].read_text())
+            self.assertEqual(payload['capture_id'], 1)
+            self.assertTrue(payload['metadata']['burst_gate'])

@@ -87,9 +87,12 @@ def parser():
     result.add_argument('--pin', type=int, default=0)
     result.add_argument('--duration-ms', type=int, default=3000)
     result.add_argument('--max-edges', type=int, default=8192)
-    result.add_argument('--continuous', action='store_true', help='Repeat windows with Pico display feedback')
+    result.add_argument('--continuous', action='store_true', help='Listen continually; save plausible bursts with Pico display feedback')
+    result.add_argument('--all-windows', action='store_true', help='Save idle windows too (raw diagnostic mode)')
+    result.add_argument('--burst-min-pulses', type=int, default=20)
+    result.add_argument('--burst-max-us', type=int, default=4000)
     result.add_argument('--display', action='store_true', help='Show Pico Explorer display for a single window')
-    result.add_argument('--count', type=int, default=0, help='Stop after N continuous windows; 0 runs until Ctrl-C')
+    result.add_argument('--count', type=int, default=0, help='Stop after N saved captures; 0 runs until Ctrl-C')
     result.add_argument('--output-dir', type=Path, default=ROOT / 'captures/ceiling-fan/local')
     return result
 
@@ -104,7 +107,9 @@ def save_recording(recording, args, now, stem, transcript, error=None):
         'metadata': {'button': args.button, 'press': args.press, 'kind': args.kind,
                      'receiver': args.receiver, 'supply': args.supply, 'notes': args.notes,
                      'port': args.port, 'pin': args.pin,
-                     'requested_duration_ms': args.duration_ms, 'max_edges': args.max_edges},
+                     'requested_duration_ms': args.duration_ms, 'max_edges': args.max_edges,
+                     'burst_gate': args.continuous and not args.all_windows,
+                     'burst_min_pulses': args.burst_min_pulses, 'burst_max_us': args.burst_max_us},
         'complete': recording.complete and error is None, 'error': error,
         'begin': recording.begin, 'end': recording.end,
         'durations_us': recording.durations, 'levels_after': recording.levels,
@@ -126,6 +131,8 @@ def main(argv=None):
         raise SystemExit('pin must be 0..28; press must be positive')
     if args.count < 0 or (args.count and not args.continuous):
         raise SystemExit('count must be nonnegative and requires --continuous')
+    if not 2 <= args.burst_min_pulses <= 1000 or not 60 <= args.burst_max_us <= 30000:
+        raise SystemExit('burst-min-pulses must be 2..1000; burst-max-us must be 60..30000')
     executable = shutil.which('mpremote')
     if executable is None:
         raise SystemExit('Install mpremote first: python3 -m pip install mpremote')
@@ -139,6 +146,9 @@ def main(argv=None):
     options = 'pin={}, duration_ms={}, max_edges={}'.format(args.pin, args.duration_ms, args.max_edges)
     if args.continuous or args.display:
         options += ', continuous={!r}, show_display=True, capture_limit={}'.format(args.continuous, args.count)
+    if args.continuous:
+        options += ', all_windows={!r}, burst_min_pulses={}, burst_max_us={}'.format(
+            args.all_windows, args.burst_min_pulses, args.burst_max_us)
     code = "ns={{'__name__':'rf_capture'}}; exec({!r}, ns); ns['main']({})".format(source, options)
     recording = Recording()
     error = None
@@ -161,6 +171,12 @@ def main(argv=None):
                     log.flush()
                     if line.startswith(PREFIX):
                         record = json.loads(line[len(PREFIX):])
+                        if args.continuous and record.get('type') == 'idle':
+                            if (recording.ready is None or recording.begin is not None or
+                                    record.get('capture_id') != recording.ready.get('capture_id')):
+                                raise ValueError('Invalid idle record')
+                            recording = Recording()
+                            continue
                         if args.continuous and record.get('type') == 'ready':
                             if recording.ready is not None:
                                 if recording.end is None:
@@ -173,9 +189,10 @@ def main(argv=None):
                             watchdog.start()
                         recording.accept(record)
                         if record['type'] == 'ready':
-                            print('READY #{}: starts in {} ms; recording {:.1f}s.'.format(
-                                record.get('capture_id', 1), record.get('starts_in_ms', 1000),
-                                args.duration_ms / 1000), flush=True)
+                            if not args.continuous or args.all_windows or record.get('starts_in_ms'):
+                                print('READY #{}: starts in {} ms; recording {:.1f}s.'.format(
+                                    record.get('capture_id', 1), record.get('starts_in_ms', 1000),
+                                    args.duration_ms / 1000), flush=True)
                         elif args.continuous and record['type'] == 'end':
                             all_complete &= save_recording(recording, args, window_time, stem, transcript, error)
                             saved += 1

@@ -82,9 +82,9 @@ class CaptureDisplay:
         display.set_pen(self.yellow if state != 'LISTENING' else self.green)
         display.text(state, 8, 56, 224, 2)
         display.set_pen(self.white)
-        display.text('Window #{}'.format(capture_id), 8, 85, 224, 2)
+        display.text('Next #{}'.format(capture_id), 8, 85, 224, 2)
         if self.latest is None:
-            display.text('Waiting for first capture', 8, 125, 224, 1)
+            display.text('Waiting for RF burst', 8, 125, 224, 1)
         else:
             number, edges, truncated = self.latest
             display.set_pen(self.yellow if truncated else self.green)
@@ -114,8 +114,29 @@ def transmit(capture, pin, duration_ms, max_edges, capture_id):
               capture.end_us, capture.last_us)})
 
 
+def has_burst(capture, min_pulses=20, max_pulse_us=4000):
+    """Gate notifications, keeping the original window unfiltered on a match.
+
+    Sparse 5-15 ms idle transitions seen on the bench do not qualify. This is
+    an activity heuristic, not identification of our fan or its protocol.
+    """
+    run = total = 0
+    for index in range(1, capture.count):
+        width = capture.durations[index]
+        if (60 <= width <= max_pulse_us and
+                capture.levels[index] != capture.levels[index - 1]):
+            run += 1
+            total += width
+            if run >= min_pulses and total >= 6000:
+                return True
+        else:
+            run = total = 0
+    return False
+
+
 def main(pin=0, duration_ms=3000, max_edges=8192, continuous=False,
-         show_display=False, capture_limit=0):
+         show_display=False, capture_limit=0, all_windows=False,
+         burst_min_pulses=20, burst_max_us=4000):
     if not 1 <= duration_ms <= 30000:
         raise ValueError('duration_ms must be 1..30000')
     if not 1 <= max_edges <= 32768:
@@ -124,22 +145,30 @@ def main(pin=0, duration_ms=3000, max_edges=8192, continuous=False,
         raise ValueError('pin must be 0..28')
     if capture_limit < 0:
         raise ValueError('capture_limit must be nonnegative')
+    if not 2 <= burst_min_pulses <= 1000 or not 60 <= burst_max_us <= 30000:
+        raise ValueError('Invalid burst gate settings')
     micropython.alloc_emergency_exception_buf(100)
     screen = CaptureDisplay(pin) if show_display else None
     capture = RawCapture(pin, max_edges)
     capture_id = 1
+    first_window = True
     try:
         while True:
             if screen:
-                screen.show(capture_id, 'ARMING' if capture_id == 1 else 'LISTENING')
+                screen.show(capture_id, 'ARMING' if first_window else 'LISTENING')
             emit({'type': 'ready', 'schema': 1, 'capture_id': capture_id,
                   'pin': pin, 'duration_ms': duration_ms, 'max_edges': max_edges,
-                  'starts_in_ms': 1000 if capture_id == 1 else 0})
-            if capture_id == 1:
+                  'starts_in_ms': 1000 if first_window else 0})
+            if first_window:
                 time.sleep_ms(1000)
                 if screen:
                     screen.show(capture_id, 'LISTENING')
+            first_window = False
             capture.acquire(duration_ms)
+            if continuous and not all_windows and not has_burst(
+                    capture, burst_min_pulses, burst_max_us):
+                emit({'type': 'idle', 'capture_id': capture_id, 'edges': capture.count})
+                continue
             if screen:
                 screen.show(capture_id, 'TRANSFERRING', capture)
             transmit(capture, pin, duration_ms, max_edges, capture_id)

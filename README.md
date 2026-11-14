@@ -53,8 +53,9 @@ work; the current apps display distance and temperature separately.
 
 Run `python scripts/log_rf.py --port /dev/cu.usbmodem1401 --continuous` from an
 activated RF environment to keep capturing while the Pico display shows window
-numbers, the last captured number, edge counts and truncation. The Mac saves each
-numbered window automatically; map it to a remote button afterward. The default
+numbers, the last captured number, edge counts and truncation. The Mac saves
+numbered captures only when a window contains a plausible RF burst; idle windows
+do not advance the counter. Map saved captures to remote buttons afterward. The default
 is a three-second window, with brief transfer/display gaps between windows.
 
 Use the [Mac raw capture workflow](docs/rf-raw-capture.md) to save labelled,
@@ -62,7 +63,8 @@ unfiltered pulse durations and sampled signal levels from the connected receiver
 `rf_capture.py` records a bounded window in RAM; `scripts/log_rf.py` runs it
 through `mpremote` and saves JSON plus a serial transcript. Capture runs without
 USB logging or display updates, and buffer truncation is explicit. No protocol
-or repeated-frame filter is applied. This temporarily interrupts the running app
+or repeated-frame filter is applied. Continuous mode uses an activity gate for
+saving/notifications; `--all-windows` disables that gate for diagnostics. This temporarily interrupts the running app
 and leaves the device's startup files unchanged. Confirm the DollaTek's actual
 wiring and DATA voltage before using GP0; the older MX-RM-5V wiring notes do not
 verify the replacement receiver.

@@ -41,14 +41,27 @@ After setup, start the logger and leave it running:
 python scripts/log_rf.py --port /dev/cu.usbmodem1401 --continuous
 ```
 
-After a one-second **ARMING** countdown, the Pico display shows **LISTENING**, the current window number, and the last
-**CAPTURED #N** with its edge count. During transfer it shows **TRANSFERRING**;
-buffer overflow is shown as **TRUNCATED**. Press remote buttons while it is
-listening and note the window numbers. Each window lasts three seconds by
-default, including idle/noise windows. This is raw recording, not command detection:
-a press can cross a window boundary, so retain adjacent windows when decoding.
+After one-second **ARMING**, the Pico shows **LISTENING** and the next capture
+number. It examines three-second raw windows, but saves and increments the number
+only when a window contains a plausible RF burst. Idle windows, including empty
+ones, do not create capture files or change the counter. The last **CAPTURED #N**
+remains visible while listening; **TRANSFERRING** indicates a USB transfer and
+**TRUNCATED** indicates overflow on a qualifying capture. Press remote buttons
+while listening and note the capture number after the press.
 
-The Mac saves each window immediately to a separate `…-capture-000001.json`
+The initial gate requires at least 20 consecutive alternating edge intervals
+between 60 and 4,000 microseconds, spanning at least 6 ms. This rejects the sparse
+5–15 ms idle transitions observed on the bench. It does not identify the fan:
+noise or another transmitter can qualify, and a different fan pulse structure
+might need different settings. `--burst-min-pulses` and `--burst-max-us` tune the
+gate. A qualifying window keeps all raw intervals, including surrounding noise;
+no pulse filtering or protocol decoding is applied to the saved data.
+
+Use `--all-windows` with `--continuous` to restore saving every window for raw
+diagnostics. Single captures remain ungated. A press can cross a window boundary
+or fall in a transfer gap; retry if it does not register.
+
+The Mac saves each qualifying window immediately to a separate `…-capture-000001.json`
 file, with `session_id` and `capture_id` matching the screen. IDs restart at 1
 for each session; filenames have a unique session prefix. No button label is
 required: the default is `unlabelled` and press kind is `unknown`. Afterward, map `(session_id, capture_id)`
@@ -63,7 +76,7 @@ Pico; the terminal's **Saved #N** confirms writing the file on the Mac. The Mac
 logger must remain connected; the Pico does not store recordings in flash.
 
 Use `--duration-ms 1000` for shorter windows, or `--count 3` to stop after three
-windows. `--display` adds the same screen feedback to a single capture.
+saved captures (idle windows do not count). `--display` adds the same screen feedback to a single capture.
 A normal finite run ends with **STOPPED** on the Pico. To end an indefinite
 session, press Ctrl-C in the Mac terminal, then reset the Pico to resume its
 startup app:
@@ -148,7 +161,8 @@ The JSON `schema` is `pico-rf-capture-v1` and contains:
 The USB wire format is newline-delimited JSON prefixed with `RFRAW `, containing
 `ready`, `begin`, numbered `edges` chunks and `end` records. Chunks are transmitted
 only after the GPIO IRQ is detached. Continuous mode repeats the record sequence with a
-new `capture_id` in `ready`, `begin` and `end`. Start/stop sampling has a small software
+new `capture_id` in `ready`, `begin` and `end`. Rejected windows emit an `idle`
+heartbeat and reuse the same next ID; the host does not save these as captures. Start/stop sampling has a small software
 boundary uncertainty. The first and trailing intervals can be partial pulses.
 Keep these boundaries when analysing recordings rather than treating them as
 complete protocol symbols. Levels are electrical levels; polarity is not assumed.
@@ -185,3 +199,7 @@ Display-enabled continuous mode was also exercised on the connected board using
 three one-second windows. The same preallocated buffer is reused, and each window
 is saved separately. The default buffer is 8,192 edges (about 40 KiB) to leave room for the display;
 the temporary initialisation list is collected before allocating level storage.
+
+Continuous capture now gates notifications and saving on dense pulse activity.
+Tests cover empty input, sparse idle transitions, short glitches, alternating
+bursts, mismatched levels, and idle heartbeats that do not consume a capture ID.

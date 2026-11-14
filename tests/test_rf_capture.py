@@ -94,7 +94,7 @@ class CaptureTests(unittest.TestCase):
         with patch.object(module, 'emit', side_effect=messages.append), \
              patch.object(module, 'CaptureDisplay', Screen):
             module.main(duration_ms=2, max_edges=10, continuous=True,
-                        show_display=True, capture_limit=3)
+                        show_display=True, capture_limit=3, all_windows=True)
         ready = [m for m in messages if m['type'] == 'ready']
         ends = [m for m in messages if m['type'] == 'end']
         self.assertEqual([m['capture_id'] for m in ready], [1, 2, 3])
@@ -103,3 +103,49 @@ class CaptureTests(unittest.TestCase):
         self.assertIn((1, 'TRANSFERRING', 1), screen_updates)
         self.assertIn((3, 'TRANSFERRING', 0), screen_updates)
         self.assertEqual(screen_updates[-1], (3, 'STOPPED', None))
+
+    def test_burst_gate_rejects_empty_sparse_idle_and_glitches(self):
+        module = self.load_capture([])
+        capture = module.RawCapture(0, 256)
+        for widths in ([], [6000, 14000] * 100, [10, 350, 10, 1000] * 50,
+                       [350, 1050] * 5):
+            capture.count = len(widths)
+            for index, width in enumerate(widths):
+                capture.durations[index] = width
+                capture.levels[index] = index % 2
+            self.assertFalse(module.has_burst(capture))
+
+    def test_burst_gate_accepts_dense_pulses_without_changing_raw_data(self):
+        module = self.load_capture([])
+        capture = module.RawCapture(0, 256)
+        widths = [200000, 10000] + [350, 1050] * 24 + [10000]
+        capture.count = len(widths)
+        for index, width in enumerate(widths):
+            capture.durations[index] = width
+            capture.levels[index] = index % 2
+        self.assertTrue(module.has_burst(capture))
+        self.assertEqual(list(capture.durations[:capture.count]), widths)
+        capture.levels[:] = bytes(len(capture.levels))
+        self.assertFalse(module.has_burst(capture))
+
+    def test_continuous_idle_does_not_advance_id_or_notify_capture(self):
+        module = self.load_capture([(1010100 + 350 * i, (i + 1) % 2) for i in range(24)])
+        messages = []
+        original = module.RawCapture.acquire
+        calls = []
+
+        def bounded(capture, duration_ms):
+            calls.append(1)
+            if len(calls) > 2:
+                raise AssertionError('Expected burst not captured')
+            original(capture, duration_ms)
+
+        with patch.object(module, 'emit', side_effect=messages.append), \
+             patch.object(module.RawCapture, 'acquire', bounded):
+            module.main(duration_ms=10, max_edges=100, continuous=True, capture_limit=1)
+        self.assertEqual([m['capture_id'] for m in messages if m['type'] == 'ready'], [1, 1])
+        self.assertEqual(len([m for m in messages if m['type'] == 'idle']), 1)
+        ends = [m for m in messages if m['type'] == 'end']
+        self.assertEqual(len(ends), 1)
+        self.assertEqual(ends[0]['capture_id'], 1)
+        self.assertEqual(ends[0]['edge_count'], 24)
