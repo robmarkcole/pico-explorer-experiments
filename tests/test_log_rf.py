@@ -51,7 +51,7 @@ class LoggerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             recording.accept(bad_end)
 
-    def run_logger(self, directory, wire_records, status=0):
+    def run_logger(self, directory, wire_records, status=0, extra_args=None):
         class Process:
             stdout = io.StringIO(''.join('RFRAW ' + json.dumps(r) + '\n' for r in wire_records))
 
@@ -68,11 +68,11 @@ class LoggerTests(unittest.TestCase):
              patch.object(logger.subprocess, 'Popen', return_value=Process()) as popen, \
              contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             result = logger.main(['--port', '/dev/test', '--button', 'speed/1',
-                                  '--supply', '3.3V', '--output-dir', directory])
+                                  '--supply', '3.3V', '--output-dir', directory] + (extra_args or []))
         command = popen.call_args.args[0]
         self.assertEqual(command[:5], ['/fake/mpremote', 'connect', '/dev/test', 'soft-reset', 'exec'])
         compile(command[-1], '<remote-code>', 'exec')
-        self.assertIn("ns['main'](pin=0, duration_ms=3000, max_edges=16384)", command[-1])
+        self.assertIn("ns['main'](pin=0, duration_ms=3000, max_edges=8192", command[-1])
         return result
 
     def test_cli_saves_labels_and_transcript_and_unique_files(self):
@@ -94,3 +94,41 @@ class LoggerTests(unittest.TestCase):
                     self.assertEqual(self.run_logger(directory, wire_records, status), 1)
                     payload = json.loads(next(Path(directory).glob('*.json')).read_text())
                     self.assertFalse(payload['complete'])
+
+    def test_continuous_saves_separate_numbered_recordings(self):
+        stream = []
+        for number in (1, 2, 3):
+            for record in records():
+                record = dict(record)
+                if record['type'] in ('ready', 'begin', 'end'):
+                    record['capture_id'] = number
+                stream.append(record)
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertEqual(self.run_logger(directory, stream,
+                             extra_args=['--continuous', '--count', '3']), 0)
+            paths = sorted(Path(directory).glob('*.json'))
+            self.assertEqual(len(paths), 3)
+            payloads = [json.loads(p.read_text()) for p in paths]
+            self.assertEqual([p['capture_id'] for p in payloads], [1, 2, 3])
+            self.assertTrue(all(p['complete'] for p in payloads))
+            self.assertEqual(len({p['session_id'] for p in payloads}), 1)
+
+    def test_continuous_preserves_completed_capture_when_next_is_interrupted(self):
+        stream = []
+        for number, window in ((1, records()), (2, records()[:3])):
+            for record in window:
+                record = dict(record)
+                if record['type'] in ('ready', 'begin', 'end'):
+                    record['capture_id'] = number
+                stream.append(record)
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertEqual(self.run_logger(directory, stream,
+                             extra_args=['--continuous', '--count', '2']), 1)
+            payloads = [json.loads(p.read_text()) for p in sorted(Path(directory).glob('*.json'))]
+            self.assertEqual([p['complete'] for p in payloads], [True, False])
+
+    def test_rejects_mixed_capture_ids(self):
+        recording = logger.Recording()
+        recording.accept(dict(records()[0], capture_id=1))
+        with self.assertRaises(ValueError):
+            recording.accept(dict(records()[1], capture_id=2))

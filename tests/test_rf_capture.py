@@ -20,6 +20,7 @@ class CaptureTests(unittest.TestCase):
                 self.level = 0
                 self.handler = None
                 self.transitions = list(transitions)
+                clock.pin = self
 
             def value(self):
                 return self.level
@@ -44,7 +45,8 @@ class CaptureTests(unittest.TestCase):
         spec = importlib.util.spec_from_file_location('rf_capture_test', ROOT / 'rf_capture.py')
         module = importlib.util.module_from_spec(spec)
         with patch.dict(sys.modules, {'machine': types.SimpleNamespace(Pin=Pin),
-                                     'micropython': types.SimpleNamespace(), 'time': fake_time}):
+                                     'micropython': types.SimpleNamespace(alloc_emergency_exception_buf=lambda size: None),
+                                     'time': fake_time}):
             spec.loader.exec_module(module)
         return module
 
@@ -77,3 +79,27 @@ class CaptureTests(unittest.TestCase):
                 self.assertEqual(capture.count, len(edges))
                 self.assertFalse(capture.overflow)
                 self.assertEqual(capture.end_us, 2000)
+
+    def test_continuous_reuses_buffer_and_displays_numbered_captures(self):
+        module = self.load_capture([(1000100, 1), (1002200, 0)])
+        messages, screen_updates = [], []
+
+        class Screen:
+            def __init__(self, pin):
+                pass
+
+            def show(self, number, state, capture=None):
+                screen_updates.append((number, state, None if capture is None else capture.count))
+
+        with patch.object(module, 'emit', side_effect=messages.append), \
+             patch.object(module, 'CaptureDisplay', Screen):
+            module.main(duration_ms=2, max_edges=10, continuous=True,
+                        show_display=True, capture_limit=3)
+        ready = [m for m in messages if m['type'] == 'ready']
+        ends = [m for m in messages if m['type'] == 'end']
+        self.assertEqual([m['capture_id'] for m in ready], [1, 2, 3])
+        self.assertEqual([m['starts_in_ms'] for m in ready], [1000, 0, 0])
+        self.assertEqual([m['edge_count'] for m in ends], [1, 1, 0])
+        self.assertIn((1, 'TRANSFERRING', 1), screen_updates)
+        self.assertIn((3, 'TRANSFERRING', 0), screen_updates)
+        self.assertEqual(screen_updates[-1], (3, 'STOPPED', None))

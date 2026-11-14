@@ -32,6 +32,8 @@ class Recording:
         elif kind == 'begin':
             if self.ready is None or self.begin is not None or record.get('schema') != 1:
                 raise ValueError('Invalid begin record')
+            if record.get('capture_id') != self.ready.get('capture_id'):
+                raise ValueError('Capture ID mismatch')
             if record.get('initial_level') not in (0, 1):
                 raise ValueError('Invalid initial level')
             self.begin = record
@@ -50,6 +52,8 @@ class Recording:
         elif kind == 'end':
             if self.begin is None or self.end is not None:
                 raise ValueError('Invalid end record')
+            if record.get('capture_id') != self.begin.get('capture_id'):
+                raise ValueError('Capture ID mismatch')
             if record['edge_count'] != len(self.durations):
                 raise ValueError('Edge count mismatch')
             trailing = record['trailing_us']
@@ -74,17 +78,44 @@ class Recording:
 def parser():
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument('--port', required=True, help='Explicit /dev/cu.usbmodem… port')
-    result.add_argument('--button', required=True, help='Button label, or idle for a baseline')
+    result.add_argument('--button', default='unlabelled', help='Button label, or idle for a baseline')
     result.add_argument('--press', type=int, default=1, help='Repetition number')
-    result.add_argument('--kind', choices=('short', 'held', 'idle'), default='short')
+    result.add_argument('--kind', choices=('unknown', 'short', 'held', 'idle'), default='unknown')
     result.add_argument('--receiver', default='DollaTek (model unverified)')
-    result.add_argument('--supply', required=True, help='Actual receiver supply, e.g. 3.3V')
+    result.add_argument('--supply', default='unverified', help='Actual receiver supply, e.g. 3.3V')
     result.add_argument('--notes', default='', help='Remote model, wiring, distance, etc.')
     result.add_argument('--pin', type=int, default=0)
     result.add_argument('--duration-ms', type=int, default=3000)
-    result.add_argument('--max-edges', type=int, default=16384)
+    result.add_argument('--max-edges', type=int, default=8192)
+    result.add_argument('--continuous', action='store_true', help='Repeat windows with Pico display feedback')
+    result.add_argument('--display', action='store_true', help='Show Pico Explorer display for a single window')
+    result.add_argument('--count', type=int, default=0, help='Stop after N continuous windows; 0 runs until Ctrl-C')
     result.add_argument('--output-dir', type=Path, default=ROOT / 'captures/ceiling-fan/local')
     return result
+
+
+def save_recording(recording, args, now, stem, transcript, error=None):
+    number = recording.ready.get('capture_id', 1) if recording.ready else 1
+    suffix = '-capture-{:06d}'.format(number) if args.continuous else ''
+    destination = args.output_dir / (stem + suffix + '.json')
+    payload = {
+        'schema': 'pico-rf-capture-v1', 'recorded_at_utc': now.isoformat(),
+        'session_id': stem, 'capture_id': number,
+        'metadata': {'button': args.button, 'press': args.press, 'kind': args.kind,
+                     'receiver': args.receiver, 'supply': args.supply, 'notes': args.notes,
+                     'port': args.port, 'pin': args.pin,
+                     'requested_duration_ms': args.duration_ms, 'max_edges': args.max_edges},
+        'complete': recording.complete and error is None, 'error': error,
+        'begin': recording.begin, 'end': recording.end,
+        'durations_us': recording.durations, 'levels_after': recording.levels,
+        'transcript': transcript.name,
+    }
+    with destination.open('x') as output:
+        json.dump(payload, output, indent=2)
+        output.write('\n')
+    print('Saved #{}: {} ({} edges; {})'.format(number, destination,
+          len(recording.durations), 'complete' if payload['complete'] else 'INCOMPLETE'), flush=True)
+    return payload['complete']
 
 
 def main(argv=None):
@@ -93,6 +124,8 @@ def main(argv=None):
         raise SystemExit('duration-ms must be 1..30000; max-edges must be 1..32768')
     if not 0 <= args.pin <= 28 or args.press < 1:
         raise SystemExit('pin must be 0..28; press must be positive')
+    if args.count < 0 or (args.count and not args.continuous):
+        raise SystemExit('count must be nonnegative and requires --continuous')
     executable = shutil.which('mpremote')
     if executable is None:
         raise SystemExit('Install mpremote first: python3 -m pip install mpremote')
@@ -102,13 +135,17 @@ def main(argv=None):
     stem = '{}-{}-{:02d}-{}'.format(now.strftime('%Y%m%dT%H%M%S%fZ'), label,
                                   args.press, uuid.uuid4().hex[:8])
     transcript = args.output_dir / (stem + '.serial.txt')
-    destination = args.output_dir / (stem + '.json')
     source = (ROOT / 'rf_capture.py').read_text()
-    # Execute the local module in a named namespace without its __main__ guard.
-    code = "ns={{'__name__':'rf_capture'}}; exec({!r}, ns); ns['main'](pin={}, duration_ms={}, max_edges={})".format(
-        source, args.pin, args.duration_ms, args.max_edges)
+    options = 'pin={}, duration_ms={}, max_edges={}'.format(args.pin, args.duration_ms, args.max_edges)
+    if args.continuous or args.display:
+        options += ', continuous={!r}, show_display=True, capture_limit={}'.format(args.continuous, args.count)
+    code = "ns={{'__name__':'rf_capture'}}; exec({!r}, ns); ns['main']({})".format(source, options)
     recording = Recording()
     error = None
+    saved = 0
+    all_complete = True
+    interrupted = False
+    window_time = now
     print('Connecting to {}. Wait for READY before pressing the remote.'.format(args.port), flush=True)
     try:
         with transcript.open('x') as log:
@@ -124,16 +161,34 @@ def main(argv=None):
                     log.flush()
                     if line.startswith(PREFIX):
                         record = json.loads(line[len(PREFIX):])
+                        if args.continuous and record.get('type') == 'ready':
+                            if recording.ready is not None:
+                                if recording.end is None:
+                                    raise ValueError('New window before previous capture completed')
+                                recording = Recording()
+                            window_time = datetime.now(timezone.utc)
+                            watchdog.cancel()
+                            watchdog = threading.Timer(args.duration_ms / 1000 + 30, process.kill)
+                            watchdog.daemon = True
+                            watchdog.start()
                         recording.accept(record)
                         if record['type'] == 'ready':
-                            print('READY: capture starts in 1 second; press during the next {:.1f}s.'.format(
+                            print('READY #{}: starts in {} ms; recording {:.1f}s.'.format(
+                                record.get('capture_id', 1), record.get('starts_in_ms', 1000),
                                 args.duration_ms / 1000), flush=True)
+                        elif args.continuous and record['type'] == 'end':
+                            all_complete &= save_recording(recording, args, window_time, stem, transcript, error)
+                            saved += 1
                     elif line.strip():
                         error = 'Unexpected device/transport output; inspect transcript'
                         print(line.rstrip(), file=sys.stderr)
                 status = process.wait()
                 if status:
                     error = 'mpremote exited with status {}'.format(status)
+                elif args.continuous and not args.count:
+                    error = 'Continuous device capture stopped unexpectedly'
+                elif args.continuous and saved != args.count:
+                    error = 'Device stopped before requested window count'
             finally:
                 watchdog.cancel()
                 if process.poll() is None:
@@ -145,28 +200,17 @@ def main(argv=None):
                         process.wait()
                 process.stdout.close()
     except (OSError, ValueError, KeyError, TypeError, KeyboardInterrupt) as exc:
+        interrupted = isinstance(exc, KeyboardInterrupt)
         error = '{}: {}'.format(type(exc).__name__, exc)
     if recording.end is None and error is None:
         error = 'Capture ended without an end record'
-    payload = {
-        'schema': 'pico-rf-capture-v1', 'recorded_at_utc': now.isoformat(),
-        'metadata': {'button': args.button, 'press': args.press, 'kind': args.kind,
-                     'receiver': args.receiver, 'supply': args.supply, 'notes': args.notes,
-                     'port': args.port, 'pin': args.pin,
-                     'requested_duration_ms': args.duration_ms, 'max_edges': args.max_edges},
-        'complete': recording.complete and error is None, 'error': error,
-        'begin': recording.begin, 'end': recording.end,
-        'durations_us': recording.durations, 'levels_after': recording.levels,
-        'transcript': transcript.name,
-    }
-    with destination.open('x') as output:
-        json.dump(payload, output, indent=2)
-        output.write('\n')
-    print('Saved {} ({} edges; {})'.format(destination, len(recording.durations),
-          'complete' if payload['complete'] else 'INCOMPLETE'))
+    if not args.continuous or recording.end is None:
+        all_complete &= save_recording(recording, args, window_time, stem, transcript, error)
     if error:
         print(error, file=sys.stderr)
-    return 0 if payload['complete'] else 1
+    if args.continuous and interrupted:
+        return 0
+    return 0 if all_complete and error is None else 1
 
 
 if __name__ == '__main__':

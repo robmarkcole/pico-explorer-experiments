@@ -1,7 +1,7 @@
 # Capture fan remote pulses on a Mac
 
 This mode records a bounded window of **unfiltered GP0 edges** on the Pico,
-then sends the recording over USB after capture stops. It does not assume a
+then sends each recording over USB after its capture window stops. It does not assume a
 frame gap, pulse width, repeated frame count, protocol or button code.
 
 ## Wiring and setup
@@ -33,7 +33,51 @@ capture; use `mpremote connect PORT reset` or unplug/reconnect to resume startup
 Existing Pimoroni MicroPython firmware is sufficient; no firmware flash is needed.
 See [mpremote's documentation](https://docs.micropython.org/en/latest/reference/mpremote.html).
 
-## Collect recordings
+## Run continuously with the Pico display
+
+After setup, start the logger and leave it running:
+
+```sh
+python scripts/log_rf.py --port /dev/cu.usbmodem1401 --continuous
+```
+
+After a one-second **ARMING** countdown, the Pico display shows **LISTENING**, the current window number, and the last
+**CAPTURED #N** with its edge count. During transfer it shows **TRANSFERRING**;
+buffer overflow is shown as **TRUNCATED**. Press remote buttons while it is
+listening and note the window numbers. Each window lasts three seconds by
+default, including idle/noise windows. This is raw recording, not command detection:
+a press can cross a window boundary, so retain adjacent windows when decoding.
+
+The Mac saves each window immediately to a separate `…-capture-000001.json`
+file, with `session_id` and `capture_id` matching the screen. IDs restart at 1
+for each session; filenames have a unique session prefix. No button label is
+required: the default is `unlabelled` and press kind is `unknown`. Afterward, map `(session_id, capture_id)`
+to the button pressed in your notes or the JSON `metadata.button` field. Captures
+are saved under `captures/ceiling-fan/local/`. The `--supply` default is
+`unverified`; supply the real value and hardware notes when known.
+
+Display updates, garbage collection and USB transfers happen **between** windows.
+There is a short unrecorded gap: this is continuous operation with repeated
+bounded windows, not gapless sampling. The screen confirms acquisition on the
+Pico; the terminal's **Saved #N** confirms writing the file on the Mac. The Mac
+logger must remain connected; the Pico does not store recordings in flash.
+
+Use `--duration-ms 1000` for shorter windows, or `--count 3` to stop after three
+windows. `--display` adds the same screen feedback to a single capture.
+A normal finite run ends with **STOPPED** on the Pico. To end an indefinite
+session, press Ctrl-C in the Mac terminal, then reset the Pico to resume its
+startup app:
+
+```sh
+mpremote connect /dev/cu.usbmodem1401 reset
+```
+
+Stopping the host alone does not guarantee the device stops; do not treat later
+screen numbers as saved recordings after disconnecting the logger. Completed
+files are retained if a subsequent window or USB connection fails. The active
+window is marked incomplete where possible.
+
+## Collect individually labelled recordings
 
 First record an idle baseline (replace the example port and supply with yours):
 
@@ -52,16 +96,15 @@ python scripts/log_rf.py --port /dev/cu.usbmodem1401 \
 ```
 
 Wait for **READY**. Capture starts one second later and runs for three seconds
-by default. Press the remote during that window. The Pico display is not updated
-by this mode. Repeat at least five times per button, changing `--press`, and
+by default. Press the remote during that window. Without `--display`, a single capture does not update the Pico screen. Repeat at least five times per button, changing `--press`, and
 include held presses with `--kind held`. A label does not automatically trigger
 or detect a button press.
 
 Options:
 
 - `--duration-ms 3000`: capture window, 1–30000 ms. Actual duration is reported.
-- `--max-edges 16384`: preallocated edge capacity, 1–32768. The default uses
-  about 80 KiB for pulse/level storage, excluding interpreter overhead.
+- `--max-edges 8192`: preallocated edge capacity, 1–32768. The default uses
+  about 40 KiB for pulse/level storage, excluding interpreter overhead.
 - `--pin 0`: input GPIO, 0–28. Choose an exposed, unused pin suitable for your
   board; several GPIOs belong to the Explorer display or attached peripherals.
 - `--output-dir PATH`: override the default `captures/ceiling-fan/local/`.
@@ -80,7 +123,8 @@ valid baseline, but does not establish that the receiver works.
 
 Connection failures, corrupt chunks, device exceptions, Ctrl-C and missing end
 records are saved as incomplete recordings with the transcript where possible.
-The host kills a stalled transport after the requested duration plus 30 seconds.
+The host kills a stalled transport after the requested duration plus 30 seconds,
+resetting that timeout for each new continuous window.
 After interruption the Pico may finish its bounded capture independently; reset
 it before retrying. A filesystem failure can prevent saving output.
 
@@ -103,7 +147,8 @@ The JSON `schema` is `pico-rf-capture-v1` and contains:
 
 The USB wire format is newline-delimited JSON prefixed with `RFRAW `, containing
 `ready`, `begin`, numbered `edges` chunks and `end` records. Chunks are transmitted
-only after the GPIO IRQ is detached. Start/stop sampling has a small software
+only after the GPIO IRQ is detached. Continuous mode repeats the record sequence with a
+new `capture_id` in `ready`, `begin` and `end`. Start/stop sampling has a small software
 boundary uncertainty. The first and trailing intervals can be partial pulses.
 Keep these boundaries when analysing recordings rather than treating them as
 complete protocol symbols. Levels are electrical levels; polarity is not assumed.
@@ -135,3 +180,8 @@ exit status 1 as intended. These establish device acquisition and Mac transfer,
 not receiver compatibility or fan code recognition. Supply and receiver model
 were recorded as unverified; no remote presses were requested. Local smoke-test
 recordings are ignored by Git. The board was reset afterward to resume startup.
+
+Display-enabled continuous mode was also exercised on the connected board using
+three one-second windows. The same preallocated buffer is reused, and each window
+is saved separately. The default buffer is 8,192 edges (about 40 KiB) to leave room for the display;
+the temporary initialisation list is collected before allocating level storage.

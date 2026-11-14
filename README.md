@@ -51,6 +51,12 @@ work; the current apps display distance and temperature separately.
 
 ## RF raw capture (fan remote)
 
+Run `python scripts/log_rf.py --port /dev/cu.usbmodem1401 --continuous` from an
+activated RF environment to keep capturing while the Pico display shows window
+numbers, the last captured number, edge counts and truncation. The Mac saves each
+numbered window automatically; map it to a remote button afterward. The default
+is a three-second window, with brief transfer/display gaps between windows.
+
 Use the [Mac raw capture workflow](docs/rf-raw-capture.md) to save labelled,
 unfiltered pulse durations and sampled signal levels from the connected receiver.
 `rf_capture.py` records a bounded window in RAM; `scripts/log_rf.py` runs it
