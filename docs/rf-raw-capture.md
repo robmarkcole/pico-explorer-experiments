@@ -4,6 +4,14 @@ This mode records a bounded window of **unfiltered GP0 edges** on the Pico,
 then sends each recording over USB after its capture window stops. It does not assume a
 frame gap, pulse width, repeated frame count, protocol or button code.
 
+## Recorded results
+
+The [18 November 2026 session report](fan-remote-capture-2026-11-18.md) documents
+OFF and speeds 1–6: 27 complete 250 ms windows from 21 reported presses, with no
+overflow. It includes the handset photograph, button map and remaining frequency,
+electrical-interface and decoding uncertainties. These are raw labelled samples,
+not verified command codes. Capture and logging are stopped.
+
 ## Wiring and setup
 
 Confirm the actual DollaTek model, frequency, pinout, receiver supply and DATA

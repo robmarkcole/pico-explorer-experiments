@@ -51,6 +51,13 @@ work; the current apps display distance and temperature separately.
 
 ## RF raw capture (fan remote)
 
+**18 November results:** [OFF and speeds 1–6 captured and labelled](docs/fan-remote-capture-2026-11-18.md):
+21 reported presses, 27 complete raw windows, no buffer overflows. The remote
+photo adds an apparent RH787T / CHQRH787T label and a **434** sticker; actual
+frequency and command codes remain unverified. Logging is stopped. The report
+includes the button map, photo, hardware history and signal-quality limitations.
+
+
 Run `python scripts/log_rf.py --port /dev/cu.usbmodem1401 --continuous` from an
 activated RF environment to keep capturing while the Pico display shows window
 numbers, the last captured number, edge counts and truncation. The Mac saves
@@ -76,8 +83,9 @@ input activity on the Explorer display and flashes **REPEATED RF** when three
 similar pulse frames arrive. Development uses a Faro Barcelona Pemba ceiling-fan
 remote; its exact protocol and compatibility are still being established.
 
-The current bench setup powers the receiver from **3V3**, with common GND and
-DATA directly to **GP0**. Reception at this reduced supply is experimental.
+The earlier activity-display bench setup powered the receiver from **3V3**, with common GND and
+DATA directly to **GP0**. Reception at this reduced supply was experimental.
+The later 5 V capture session is recorded in the [results report](docs/fan-remote-capture-2026-11-18.md).
 Do not switch the receiver to 5 V with DATA connected directly to the Pico.
 No piezo jumper is needed. **A** clears the displayed counts.
 
