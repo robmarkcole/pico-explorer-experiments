@@ -1,0 +1,2 @@
+# Mac capture transport, tested with this version.
+mpremote==1.29.0

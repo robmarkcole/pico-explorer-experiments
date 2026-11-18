@@ -1,0 +1,483 @@
+{
+  "date": "2026-11-18",
+  "receiver": "MX-RM-5V",
+  "input": "GP0",
+  "receiver_supply_reported": "5V",
+  "session_id": "20261118T081337289037Z-unlabelled-01-65941134",
+  "buttons": 7,
+  "physical_presses_reported": 21,
+  "recordings": 27,
+  "complete_transfers": 27,
+  "truncated_recordings": 0,
+  "total_observed_edges": 10339,
+  "window_ms": 250,
+  "command_codes_decoded": 0,
+  "interpretation": "Labels are based on user reports and time clusters. Complete means recording/USB transfer completed without overflow, not that a complete valid RF frame has been decoded. Substantial short-pulse interference remains. Press-to-window grouping is inferred.",
+  "commands": [
+    {
+      "button": "fan_off",
+      "capture_ids": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "press_groups_inferred_from_timestamps": {
+        "1": [
+          1
+        ],
+        "2": [
+          2,
+          3
+        ],
+        "3": [
+          4,
+          5
+        ]
+      },
+      "fan_response_user_confirmed": true
+    },
+    {
+      "button": "fan_speed_1",
+      "capture_ids": [
+        6,
+        7,
+        8
+      ],
+      "press_groups_inferred_from_timestamps": {
+        "1": [
+          6
+        ],
+        "2": [
+          7
+        ],
+        "3": [
+          8
+        ]
+      },
+      "fan_response_user_confirmed": true
+    },
+    {
+      "button": "fan_speed_2",
+      "capture_ids": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "press_groups_inferred_from_timestamps": {
+        "1": [
+          9,
+          10
+        ],
+        "2": [
+          11
+        ],
+        "3": [
+          12,
+          13
+        ]
+      },
+      "fan_response_user_confirmed": true
+    },
+    {
+      "button": "fan_speed_3",
+      "capture_ids": [
+        14,
+        15,
+        16
+      ],
+      "press_groups_inferred_from_timestamps": {
+        "1": [
+          14
+        ],
+        "2": [
+          15
+        ],
+        "3": [
+          16
+        ]
+      },
+      "fan_response_user_confirmed": true
+    },
+    {
+      "button": "fan_speed_4",
+      "capture_ids": [
+        17,
+        18,
+        19
+      ],
+      "press_groups_inferred_from_timestamps": {
+        "1": [
+          17
+        ],
+        "2": [
+          18
+        ],
+        "3": [
+          19
+        ]
+      },
+      "fan_response_user_confirmed": true
+    },
+    {
+      "button": "fan_speed_5",
+      "capture_ids": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "press_groups_inferred_from_timestamps": {
+        "1": [
+          20
+        ],
+        "2": [
+          21
+        ],
+        "3": [
+          22,
+          23
+        ]
+      },
+      "fan_response_user_confirmed": true
+    },
+    {
+      "button": "fan_speed_6",
+      "capture_ids": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "press_groups_inferred_from_timestamps": {
+        "1": [
+          24
+        ],
+        "2": [
+          25
+        ],
+        "3": [
+          26,
+          27
+        ]
+      },
+      "fan_response_user_confirmed": true
+    }
+  ],
+  "capture_index": [
+    {
+      "capture_id": 1,
+      "button": "fan_off",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:14:13.303674+00:00",
+      "edge_count": 250,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000001.json",
+      "sha256": "bece7cdd87aa6a4f9d68a5abeb38a2002c24fa95c7d21b8eccca5f4f4ba80089"
+    },
+    {
+      "capture_id": 2,
+      "button": "fan_off",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:14:16.397678+00:00",
+      "edge_count": 320,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000002.json",
+      "sha256": "5760639baea5222a2ad9aec17457c8cdb4417e069ad6a6ea95a3a36d348cd853"
+    },
+    {
+      "capture_id": 3,
+      "button": "fan_off",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:14:16.804213+00:00",
+      "edge_count": 488,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000003.json",
+      "sha256": "b9322d8c298c6b7b31e52a65c27f9df0de27a6ccca2607ad4a0529a0a00ada82"
+    },
+    {
+      "capture_id": 4,
+      "button": "fan_off",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:14:19.538486+00:00",
+      "edge_count": 331,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000004.json",
+      "sha256": "42541685e9ebac4c27adc5dbab5bd2206faeaf6eb484fa591728de0ccaa82f23"
+    },
+    {
+      "capture_id": 5,
+      "button": "fan_off",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:14:19.937453+00:00",
+      "edge_count": 193,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000005.json",
+      "sha256": "0370fee301adc0a7f2f249276914f49c733659aa85f56c478e9f07df9860ab42"
+    },
+    {
+      "capture_id": 6,
+      "button": "fan_speed_1",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:15:42.849500+00:00",
+      "edge_count": 289,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000006.json",
+      "sha256": "078fdefa9803e02229e19503c845bc4b828dc74bfe5623a2e91306a4a4c4593c"
+    },
+    {
+      "capture_id": 7,
+      "button": "fan_speed_1",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:15:44.685484+00:00",
+      "edge_count": 287,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000007.json",
+      "sha256": "0c2edd0c1052f39d5f5daf0e7bf601325a231f0bbb30a617348aeb1d6cb5162b"
+    },
+    {
+      "capture_id": 8,
+      "button": "fan_speed_1",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:15:46.849780+00:00",
+      "edge_count": 325,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000008.json",
+      "sha256": "8145f0d4b8672c7e87e935c47bbe79de1969dcaaa0c4d5e6d3a0b2853201409c"
+    },
+    {
+      "capture_id": 9,
+      "button": "fan_speed_2",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:16:41.380006+00:00",
+      "edge_count": 385,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000009.json",
+      "sha256": "4ba1712f22410b32f4a1ae33095b40bd98f419084091da66e29148aeb95b8caf"
+    },
+    {
+      "capture_id": 10,
+      "button": "fan_speed_2",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:16:41.783330+00:00",
+      "edge_count": 486,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000010.json",
+      "sha256": "c569077c70e1ea4fe4da4e3509f87b701e183c2c410d81382c17b3848d99ce5f"
+    },
+    {
+      "capture_id": 11,
+      "button": "fan_speed_2",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:16:43.270499+00:00",
+      "edge_count": 335,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000011.json",
+      "sha256": "f8031b44ac7f80637c364d1d6fbe3610a0c4f16515bbe052d2c6085046f84e75"
+    },
+    {
+      "capture_id": 12,
+      "button": "fan_speed_2",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:16:45.096173+00:00",
+      "edge_count": 368,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000012.json",
+      "sha256": "5372c9313b2e07f9dccdebbda6ccf358fd227f94f7d769b1b9bdf6aee81b74af"
+    },
+    {
+      "capture_id": 13,
+      "button": "fan_speed_2",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:16:45.501828+00:00",
+      "edge_count": 165,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000013.json",
+      "sha256": "8807b23cffdcf7178f7f04a01a4db29ebce0ee211c7534c07bcfe4d169058eb9"
+    },
+    {
+      "capture_id": 14,
+      "button": "fan_speed_3",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:17:51.506968+00:00",
+      "edge_count": 140,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000014.json",
+      "sha256": "80cb5df2669ee6877fa8c2fbd92c8529fa7d3e37cb4097d1dfa04951c39e75ea"
+    },
+    {
+      "capture_id": 15,
+      "button": "fan_speed_3",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:17:53.331734+00:00",
+      "edge_count": 331,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000015.json",
+      "sha256": "adc6f80ed202261dc4cece78ad0127478e452b68e5a0bbf7bf113d3ffe29bbe3"
+    },
+    {
+      "capture_id": 16,
+      "button": "fan_speed_3",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:17:55.490513+00:00",
+      "edge_count": 308,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000016.json",
+      "sha256": "1124a936a083f8be1885419da10242c9456cd54086baaebdf590e03959f3ac84"
+    },
+    {
+      "capture_id": 17,
+      "button": "fan_speed_4",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:19:34.281991+00:00",
+      "edge_count": 405,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000017.json",
+      "sha256": "3e28cc5f4ccfe6c2ef97f9f6e1fc6a900b127e9db878078a92f5d606b3363497"
+    },
+    {
+      "capture_id": 18,
+      "button": "fan_speed_4",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:19:35.758912+00:00",
+      "edge_count": 1846,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000018.json",
+      "sha256": "e0137d49c626fa2de4515de52e46aeb52dc78ef1a69614779db8d62cf696a7ea"
+    },
+    {
+      "capture_id": 19,
+      "button": "fan_speed_4",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:19:37.363929+00:00",
+      "edge_count": 163,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000019.json",
+      "sha256": "32b495fb12a0c1987e5f461850ceb7cfb3c28a4591ff22c125ef67eb9ec0e35d"
+    },
+    {
+      "capture_id": 20,
+      "button": "fan_speed_5",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:20:50.308152+00:00",
+      "edge_count": 423,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000020.json",
+      "sha256": "97b6ed55fbec1e14060ddd068a7bed2ce89982bab1456027dcd76646c79387ed"
+    },
+    {
+      "capture_id": 21,
+      "button": "fan_speed_5",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:20:52.141444+00:00",
+      "edge_count": 256,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000021.json",
+      "sha256": "08e442aec0429c5c94d940ba1db5bb2815f715e2db98bbc731f70bb35b15a6c5"
+    },
+    {
+      "capture_id": 22,
+      "button": "fan_speed_5",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:20:53.969598+00:00",
+      "edge_count": 432,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000022.json",
+      "sha256": "142c41f63919761735d7c04a60a7793ad73021841c7d1c3133a97ca0b028a676"
+    },
+    {
+      "capture_id": 23,
+      "button": "fan_speed_5",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:20:54.387370+00:00",
+      "edge_count": 109,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000023.json",
+      "sha256": "43fec2440232a2b6a3bf3d625d797115309f9258ea2aa3687f7b7e7f6082e0cb"
+    },
+    {
+      "capture_id": 24,
+      "button": "fan_speed_6",
+      "press_inferred": 1,
+      "recorded_at_utc": "2026-11-18T08:21:30.114776+00:00",
+      "edge_count": 375,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000024.json",
+      "sha256": "046397edb61da95cacbc908595dbf42ba237637bb6e4d74d960da7dc3f2d9a6f"
+    },
+    {
+      "capture_id": 25,
+      "button": "fan_speed_6",
+      "press_inferred": 2,
+      "recorded_at_utc": "2026-11-18T08:21:31.945655+00:00",
+      "edge_count": 400,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000025.json",
+      "sha256": "1612b9208d3b398bfc61591d44cca011db07feaa4e571d677d7afa8b4e257340"
+    },
+    {
+      "capture_id": 26,
+      "button": "fan_speed_6",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:21:33.783031+00:00",
+      "edge_count": 579,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000026.json",
+      "sha256": "6004fe8e388f716b2aa924b7ce40b9a4ea02a2a7f0cafdeddee9523a8c7c6846"
+    },
+    {
+      "capture_id": 27,
+      "button": "fan_speed_6",
+      "press_inferred": 3,
+      "recorded_at_utc": "2026-11-18T08:21:34.203454+00:00",
+      "edge_count": 350,
+      "complete_transfer": true,
+      "truncated": false,
+      "local_filename": "20261118T081337289037Z-unlabelled-01-65941134-capture-000027.json",
+      "sha256": "fe73d059be3c61d609e5dff3bb947e2ac8430baa6af4b80bb25f98f1026f629c"
+    }
+  ],
+  "data_location": "Raw JSON files and serial transcript remain in gitignored captures/ceiling-fan/local/; this tracked summary contains no pulse payloads.",
+  "remote_photo_observations": {
+    "model_reading": "RH787T (faint moulded label)",
+    "fcc_id_reading": "CHQRH787T (faint moulded label)",
+    "frequency_sticker": "434",
+    "actual_frequency_verified": false,
+    "dip_switches": 4,
+    "set_button": true,
+    "battery_marking": "23A 12V",
+    "photo": "../../assets/fan-remote-rh787t-rear.jpg"
+  },
+  "historical_data_connection": "Receiver DATA directly to GP0, no level shifter reported; DATA voltage not measured. Historical observation, not a validated safe wiring prescription.",
+  "receiver_frequency_measured": false,
+  "stopped": true
+}

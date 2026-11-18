@@ -1,8 +1,17 @@
 # RF receiver experiment
 
-## Current bench setup: 3.3 V, display feedback
+## Session status
 
-The receiver is currently powered from Explorer **3V3**, with **GND** shared
+The [18 November capture report](fan-remote-capture-2026-11-18.md) records the
+later MX-RM-5V session at a reported 5 V supply, with a direct DATA connection
+whose voltage was not verified. That historical connection is not the buffered
+circuit below and is not a validated safe interface. Logging is now stopped.
+The new handset photo shows a **434** sticker and an apparent RH787T / CHQRH787T
+label; actual frequency and protocol remain unverified.
+
+## Earlier bench setup: 3.3 V, display feedback
+
+The receiver was powered from Explorer **3V3**, with **GND** shared
 and **DATA → GP0** directly. The reduced supply avoids a 5 V DATA signal at
 the Pico input, but receiver sensitivity and output logic levels at 3.3 V are
 not guaranteed. This is a close-range development setup.
@@ -34,7 +43,7 @@ mpremote reset
 
 Proposed connections for an MX-RM-5V receiver and the existing Pico Explorer
 Base. This buffered 5 V circuit has not yet been assembled or tested. It is
-an alternative to the current 3.3 V bench setup, not a drawing of its wiring.
+an alternative to the earlier 3.3 V bench setup, not a drawing of its wiring.
 
 ![MX-RM-5V receiver wiring and Explorer mini breadboard contacts](../assets/rf-receiver-wiring.svg)
 

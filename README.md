@@ -49,6 +49,33 @@ on surface emissivity and reflected heat; any distance-based correction would
 need calibration. Combined acquisition and characterisation are ideas for future
 work; the current apps display distance and temperature separately.
 
+## RF raw capture (fan remote)
+
+**18 November results:** [OFF and speeds 1–6 captured and labelled](docs/fan-remote-capture-2026-11-18.md):
+21 reported presses, 27 complete raw windows, no buffer overflows. The remote
+photo adds an apparent RH787T / CHQRH787T label and a **434** sticker; actual
+frequency and command codes remain unverified. Logging is stopped. The report
+includes the button map, photo, hardware history and signal-quality limitations.
+
+
+Run `python scripts/log_rf.py --port /dev/cu.usbmodem1401 --continuous` from an
+activated RF environment to keep capturing while the Pico display shows window
+numbers, the last captured number, edge counts and truncation. The Mac saves
+numbered captures only when a window contains a plausible RF burst; idle windows
+do not advance the counter. Map saved captures to remote buttons afterward. The default
+is a three-second window, with brief transfer/display gaps between windows.
+
+Use the [Mac raw capture workflow](docs/rf-raw-capture.md) to save labelled,
+unfiltered pulse durations and sampled signal levels from the connected receiver.
+`rf_capture.py` records a bounded window in RAM; `scripts/log_rf.py` runs it
+through `mpremote` and saves JSON plus a serial transcript. Capture runs without
+USB logging or display updates, and buffer truncation is explicit. No protocol
+or repeated-frame filter is applied. Continuous mode uses an activity gate for
+saving/notifications; `--all-windows` disables that gate for diagnostics. This temporarily interrupts the running app
+and leaves the device's startup files unchanged. Confirm the DollaTek's actual
+wiring and DATA voltage before using GP0; the older MX-RM-5V wiring notes do not
+verify the replacement receiver.
+
 ## RF receiver display experiment
 
 `rf_sniffer.py` runs an MX-RM-5V RF receiver experiment. It shows GP0
@@ -56,8 +83,9 @@ input activity on the Explorer display and flashes **REPEATED RF** when three
 similar pulse frames arrive. Development uses a Faro Barcelona Pemba ceiling-fan
 remote; its exact protocol and compatibility are still being established.
 
-The current bench setup powers the receiver from **3V3**, with common GND and
-DATA directly to **GP0**. Reception at this reduced supply is experimental.
+The earlier activity-display bench setup powered the receiver from **3V3**, with common GND and
+DATA directly to **GP0**. Reception at this reduced supply was experimental.
+The later 5 V capture session is recorded in the [results report](docs/fan-remote-capture-2026-11-18.md).
 Do not switch the receiver to 5 V with DATA connected directly to the Pico.
 No piezo jumper is needed. **A** clears the displayed counts.
 
